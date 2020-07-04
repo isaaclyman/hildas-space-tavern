@@ -1,18 +1,27 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+    <div class="cli">
+      <CliPane></CliPane>
+    </div>
+    <div class="sidebar"></div>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import CliPane from "./CliPane";
+import cli, { BlockPrefix } from "../services/cli";
 
 export default {
-  name: 'Home',
   components: {
-    HelloWorld
+    CliPane
+  },
+  mounted() {
+    cli.addMessage(
+      `Welcome! If you're new here, type [${BlockPrefix.COMMAND}:help] [${BlockPrefix.KEY}:enter] to learn how to begin.`
+    );
   }
-}
+};
 </script>
+
+<style>
+</style>

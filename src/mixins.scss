@@ -1,0 +1,16 @@
+$darkgreen: #005b4f;
+
+@mixin flex-vcenter() {
+  align-items: center;
+  display: flex;
+}
+
+@mixin natural-border() {
+  border: 1px solid $darkgreen;
+  border-radius: 4px;
+  margin: 4px;
+}
+
+@mixin natural-shadow() {
+  box-shadow: 0px 0px 25px -15px rgba(0, 0, 0, 0.75);
+}
