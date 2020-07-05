@@ -1,13 +1,30 @@
 <template>
   <div class="pane">
-    <div
-      v-for="(part, $index) of parts"
-      class="message"
-      :key="$index"
-      v-html="displayify(part.content)"
-    ></div>
+    <div v-for="(part, $index) of parts" class="message" :key="$index">
+      <div v-if="part.type === PartType.MESSAGE" v-html="displayify(part.content)"></div>
+      <div v-if="part.type === PartType.HISTORICAL" class="input-line">
+        <div class="prompt" v-text="Prompt.DEFAULT"></div>
+        <div class="input-area">
+          <span class="input" v-text="part.content"></span>
+        </div>
+      </div>
+      <div v-if="part.type === PartType.TABLE">
+        <table class="table-message">
+          <thead>
+            <tr>
+              <th v-for="(cell, $index) of part.content[0]" :key="$index" v-text="cell"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(row, $index) of part.content.slice(1)" :key="$index">
+              <td v-for="(cell, $index) of row" :key="$index" v-text="cell"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
     <div class="input-line">
-      <div class="prompt" v-text="prompt"></div>
+      <div class="prompt" v-text="currentPrompt"></div>
       <div class="input-area">
         <input
           v-if="showInput()"
@@ -36,7 +53,7 @@
 </template>
 
 <script>
-import cli, { InputType, Prompt } from "../services/cli";
+import cli, { InputType, Prompt, PartType } from "../services/cli";
 import autofocus from "../directives/autofocus";
 import displayFormatter from "../services/displayFormatter";
 
@@ -45,7 +62,9 @@ export default {
     return {
       inputType: InputType.COMMAND,
       parts: [],
-      prompt: Prompt.DEFAULT,
+      PartType: PartType,
+      Prompt: Prompt,
+      currentPrompt: Prompt.DEFAULT,
       typedInput: "",
       typedText: ""
     };
@@ -68,6 +87,7 @@ export default {
     },
     finishInput() {
       cli.processCommand(this.typedInput);
+      this.typedInput = "";
     },
     finishText() {},
     getInputType() {
@@ -106,6 +126,7 @@ export default {
   background-color: rgba(0, 0, 0, 0.04);
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 2px;
+  display: inline-block;
   font-family: "Courier New", Courier, monospace;
   margin: 0 6px;
   padding: 2px 4px;
@@ -115,8 +136,9 @@ export default {
 .example-key {
   background-color: rgba(0, 0, 0, 0.04);
   border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: -4px 5px 8px -6px rgba(0, 0, 0, 0.51);
-  margin: 0 6px;
+  box-shadow: -2px 2px 0px 0px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+  margin: 0 4px;
   padding: 2px 6px;
   text-transform: capitalize;
 }
@@ -135,6 +157,24 @@ export default {
   display: flex;
   flex-direction: row;
   margin-bottom: 6px;
+}
+
+.table-message {
+  border-collapse: collapse;
+  margin: 0 6px;
+
+  th,
+  td {
+    border: 1px dashed $darkgreen;
+  }
+
+  th {
+    padding: 8px 14px;
+  }
+
+  td {
+    padding: 6px 14px;
+  }
 }
 
 .input-line {

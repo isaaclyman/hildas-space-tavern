@@ -17,11 +17,11 @@ export default {
   },
   mounted() {
     cli.addMessage(
-      `Welcome! If you're new here, type [${BlockPrefix.COMMAND}:help] [${BlockPrefix.KEY}:enter] to learn how to begin.`
+      `Welcome! If you're new here, type [${BlockPrefix.COMMAND}:help] [${BlockPrefix.KEY}:enter] to get started.`
     );
   }
 };
 </script>
 
-<style>
+<style lang="scss" scoped>
 </style>

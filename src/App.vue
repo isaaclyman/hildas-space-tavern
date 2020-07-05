@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="title-bar">Hilda's Space Tavern (Version 0.0.1)</div>
-    <div class="main">
+    <div class="main" ref="main">
       <router-view></router-view>
     </div>
     <div class="footer">
@@ -11,6 +11,20 @@
   </div>
 </template>
 
+<script>
+import cli from "./services/cli";
+
+export default {
+  mounted() {
+    cli.output$.onEvent(() => {
+      setTimeout(() => {
+        const main = this.$refs.main;
+        main.scrollTop = main.scrollHeight;
+      }, 100);
+    });
+  }
+};
+</script>
 
 <style lang="scss">
 @import "./mixins";
@@ -50,6 +64,7 @@ body {
 
 .main {
   flex: 1;
+  overflow-y: auto;
   padding: 16px;
 }
 
